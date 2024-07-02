@@ -18,6 +18,7 @@ const Flashcard = ({ word, meaning, usage, onSwipe, isActive, isNext }) => {
     }
   }, [isActive, isNext]);
 
+  // Math.abs mutlak değer döndürür. Negatif değer pozitif olur. x ve ye - yada + alsa da yönünden bağımsız kontrol sağlar. Kullanıcı hareketi 5px den az ise kartı sıfırlar.
   const handleDrag = (event, info) => {
     if (Math.abs(info.offset.x) < 5 && Math.abs(info.offset.y) < 5) {
       controls.start({ x: 0, y: 0, rotate: 0 });
