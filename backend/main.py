@@ -3,10 +3,21 @@ from sqlalchemy.orm import Session
 from typing import List
 from database.database import get_db, engine
 from database import models, schemas
+from fastapi.middleware.cors import CORSMiddleware
 
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+
+
+# CORS ayarları
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.post("/words/", response_model=schemas.Word)
 def create_word(word: schemas.WordCreate, db: Session = Depends(get_db)):
@@ -52,3 +63,6 @@ def delete_word(word_id: int, db: Session = Depends(get_db)):
 def search_words(query: str, db: Session = Depends(get_db)):
     words = db.query(models.Word).filter(models.Word.word.like(f"%{query}%")).all()
     return words
+
+
+
