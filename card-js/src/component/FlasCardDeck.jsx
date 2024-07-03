@@ -1,25 +1,31 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import Flashcard from './FlashCard';
 
-const FlashcardDeck = () => {
-  const [cards, setCards] = useState([
-    { id: 1, word: 'Hello', meaning: 'A greeting', usage: 'Hello, how are you?' },
-    { id: 2, word: 'World', meaning: 'The earth', usage: 'The world is round.' },
-    { id: 3, word: 'React', meaning: 'A JavaScript library', usage: 'We use React to build user interfaces.' },
-  ]);
+const API_URL = 'http://127.0.0.1:8001';
 
+const FlashcardDeck = () => {
+  const [cards, setCards] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isRestarting, setIsRestarting] = useState(false);
 
   useEffect(() => {
+    fetchWords();
+  }, []);
+
+  const fetchWords = async () => {
+    try {
+      const response = await axios.get(`${API_URL}/words/`);
+      setCards(response.data);
+    } catch (error) {
+      console.error('Error fetching words:', error);
+    }
+  };
+
+  useEffect(() => {
     if (cards.length === 0) {
       setIsRestarting(true);
-      // Kartları yeniden yükle
-      setCards([
-        { id: 1, word: 'Hello', meaning: 'A greeting', usage: 'Hello, how are you?' },
-        { id: 2, word: 'World', meaning: 'The earth', usage: 'The world is round.' },
-        { id: 3, word: 'React', meaning: 'A JavaScript library', usage: 'We use React to build user interfaces.' },
-      ]);
+      fetchWords();
       setCurrentIndex(0);
       setIsRestarting(false);
     }
